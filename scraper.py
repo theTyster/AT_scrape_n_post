@@ -20,9 +20,7 @@ for i in issues:
     request = requests.get(i)
     soup = BeautifulSoup(request.text, 'html.parser')
 
-    cover_gallery_span = soup.find_all('span', id=re.compile('cover.*', flags=re.I))
-    print(i)
-    print(cover_gallery_span)
-    print('')
-    
-
+    cover_gallery_span = soup.find_all('span', id='Gallery')#re.compile('cover.*', flags=re.I))
+    cover_gallery_h2 = cover_gallery_span.find_parent('h2')
+    cover_gallery_h3 = cover_gallery_h2.find_next_sibling('h3')
+    cover_gallery_div = cover_gallery_h3.find_next_sibling('div')
