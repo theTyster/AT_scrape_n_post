@@ -54,7 +54,9 @@ def main():
         cover_gallery_noscript = cover_gallery_div.find_all('noscript')
 
         for noscript in cover_gallery_noscript:
+            #find the attribution for each image
             caption = noscript.find_next('div', class_='lightbox-caption')
+            #find the src for each image
             cover_img_thumb = noscript.img.get('src')
 
             try:
@@ -63,6 +65,7 @@ def main():
                 at_dict.update({i:{cover_img_thumb:None}})
 
             cover_img_thumb = noscript.img.get('src')
+            # format the image source url to get the full-size image.
             cover_url_split = re.split(r'(.png|.gif|.jpg|.jpeg|.webp)', cover_img_thumb,  maxsplit=1, flags=re.I)
             cover_fullsize = cover_url_split[0] + cover_url_split[1]
 
@@ -71,7 +74,6 @@ def main():
             scraped_img_url.write(cover_fullsize + ', \n')
         all_scraped.write('<br><hr><br>')
 
-            #find the attribution for each image
 
 
     import json
