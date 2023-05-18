@@ -108,8 +108,8 @@ def main(param=None):
             if not os.path.exists(f'{p}/scraped/img/{formatted_issue_title}/fullsize/'):
                 os.mkdir(f'{p}/scraped/img/{formatted_issue_title}/fullsize/')
 
-            thumb_path = f'{p}/scraped/img/{formatted_issue_title}/thumbs/{formatted_issue_title}item_{itemNo}_thumb{cover_url_split[1]}'
-            fullsize_path = f'{p}/scraped/img/{formatted_issue_title}/fullsize/{formatted_issue_title}item_{itemNo}_full{cover_url_split[1]}'
+            thumb_path = f'{p}/scraped/img/{formatted_issue_title}/thumbs/{formatted_issue_title}_item_{itemNo}_thumb{cover_url_split[1]}'
+            fullsize_path = f'{p}/scraped/img/{formatted_issue_title}/fullsize/{formatted_issue_title}_item_{itemNo}_full{cover_url_split[1]}'
 
             open(thumb_path, 'wb').write(get_cover_img_thumb.content)
             open(fullsize_path, 'wb').write(get_cover_fullsize.content)
