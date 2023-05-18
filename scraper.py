@@ -59,8 +59,8 @@ def main(param=None):
         cover_gallery_noscript = cover_gallery_div.find_all('noscript')
 
         # find the comic preview section for each issue
-        preview_gallery_h3 = cover_galleyr_div.find_next('h3')
-        preview_gallery_div = preview_galleyr_h3.find_next('div')
+        preview_gallery_h3 = cover_gallery_div.find_next('h3')
+        preview_gallery_div = preview_gallery_h3.find_next('div')
         preview_gallery_noscript = preview_gallery_div.find_all('noscript')
 
         # for loop which locates all of the attributions, thumbnails and full images for each
@@ -85,6 +85,11 @@ def main(param=None):
             except AttributeError:
                 img_dict.update({itemNo:{'thumbnail':cover_img_thumb, 'caption':None, 'full image':cover_fullsize}})
 
+            #if running from cli. Print info to console.
+            if __name__ == '__main__':
+                print(f'Scraped from: {i}.')
+                print("Comics scraped: " + str(len(at_dict)) + '\n')
+
             itemNo += 1
 
     # Write scraped data out to files
@@ -92,10 +97,6 @@ def main(param=None):
             all_scraped.write(f'<a href={cover_fullsize}><img src ={cover_img_thumb}></a>')
             scraped_img_url.write(cover_fullsize + ', \n')
 
-        print(img_dict)
-        print('')
-        print('')
-        print('')
         all_scraped.write('<br><hr><br>')
         at_dict.update({issue_title:{'issue wikilink':i, **img_dict}})
 
