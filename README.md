@@ -9,7 +9,7 @@ scrapes data from the Adventure Time fandom wiki and then posts that data to the
 2. clone the git repo.
 3. Open a terminal and enter the cloned directory.
 4. Download the dependancies with `pip install requirements.txt`
-5. While inside the directory, run `./scraper`. This will create a directory adjacent to the git directory with all of the scraped data.
+5. While inside the directory, run `./scraper.py`. This will create a directory adjacent to the git directory with all of the scraped data.
 
 Scraped data includes:
 
