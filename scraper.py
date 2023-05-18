@@ -16,12 +16,27 @@ def main(param=None):
             print('Scrape directory already exists. Please move/rename the current directory.')
             exit()
 
-    full_size_scrape = open(f'{p}/scraped/full_size_images.html', 'a')
     all_scraped = open(f'{p}/scraped/all_scraped_data.html', 'a')
     scraped_img_url = open(f'{p}/scraped/fullsize_covers.csv', 'a')
     scraped_url = open(f'{p}/scraped/comic_wiki_links.csv', 'a')
 
-    full_size_scrape.write('<h1>This document contains all of the full-size covers of the various comic issues</h1><p>It is meant to be used for archiving. To save all of the images simply right click on the page and save it to a file. All of the images will be placed in a folder adjacent to the file.</p>')
+    html_skel = '''
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+      div {
+        display: inline-block;
+        padding: 16px; 
+      }
+    </style>
+  </head>
+'''
+    all_scraped.write(html_skel)
+
+    all_scraped.write('<p>This page is meant to act as a gallery of all scraped data. The images you see here are sourcing from the wiki. Not local files.</p>')
 
     # Request the fandom page.
     root_url = "https://adventuretime.fandom.com"
@@ -49,7 +64,9 @@ def main(param=None):
 
         # Find the Issue name
         page_title = soup.title
-        issue_title = re.search(r'.+?(?=\|)', page_title.text).group()
+        issue_title = re.search(r'.+?(?= \|)', page_title.text).group()
+        formatted_issue_title = issue_title.replace(' ', '_')
+        formatted_issue_title = formatted_issue_title.replace('/', ':_')
 
         # find the cover art section for each issue
         cover_gallery_span = soup.find('span', id='Gallery')
@@ -73,35 +90,52 @@ def main(param=None):
             caption = noscript.find_next('div', class_='lightbox-caption')
 
             #find the src for each image thumbnail
-            cover_img_thumb = noscript.img.get('src')
+            cover_img_thumb_url = noscript.img.get('src')
+            get_cover_img_thumb = requests.get(cover_img_thumb_url)
 
             # format the image src url to get the full-size image.
-            cover_url_split = re.split(r'(.png|.gif|.jpg|.jpeg|.webp)', cover_img_thumb,  maxsplit=1, flags=re.I)
-            cover_fullsize = cover_url_split[0] + cover_url_split[1]
+            cover_url_split = re.split(r'(.png|.gif|.jpg|.jpeg|.webp)', cover_img_thumb_url,  maxsplit=1, flags=re.I)
+            cover_fullsize_url = cover_url_split[0] + cover_url_split[1]
+            get_cover_fullsize = requests.get(cover_fullsize_url)
+
+            #Download all scraped images
+            if not os.path.exists(f'{p}/scraped/img'):
+                os.mkdir(f'{p}/scraped/img')
+            if not os.path.exists(f'{p}/scraped/img/{formatted_issue_title}'):
+                os.mkdir(f'{p}/scraped/img/{formatted_issue_title}')
+            if not os.path.exists(f'{p}/scraped/img/{formatted_issue_title}/thumbs/'):
+                os.mkdir(f'{p}/scraped/img/{formatted_issue_title}/thumbs/')
+            if not os.path.exists(f'{p}/scraped/img/{formatted_issue_title}/fullsize/'):
+                os.mkdir(f'{p}/scraped/img/{formatted_issue_title}/fullsize/')
+
+            thumb_path = f'{p}/scraped/img/{formatted_issue_title}/thumbs/{formatted_issue_title}item_{itemNo}_thumb{cover_url_split[1]}'
+            fullsize_path = f'{p}/scraped/img/{formatted_issue_title}/fullsize/{formatted_issue_title}item_{itemNo}_full{cover_url_split[1]}'
+
+            open(thumb_path, 'wb').write(get_cover_img_thumb.content)
+            open(fullsize_path, 'wb').write(get_cover_fullsize.content)
 
             #format scraped data into a dict object
             try:
-                img_dict.update({itemNo:{'thumbnail':cover_img_thumb, 'caption':caption.text, 'full image':cover_fullsize}})
+                img_dict.update({itemNo:{'thumbnail':thumb_path, 'caption':caption.text, 'full image':fullsize_path}})
             except AttributeError:
-                img_dict.update({itemNo:{'thumbnail':cover_img_thumb, 'caption':None, 'full image':cover_fullsize}})
+                img_dict.update({itemNo:{'thumbnail':thumb_path, 'caption':"No Attribution Provided", 'full image':fullsize_path}})
 
             #if running from cli. Print info to console.
             if __name__ == '__main__':
                 print(f'Scraped from: {i}.')
-                print("Comics scraped: " + str(len(at_dict)) + '\n')
-
-            itemNo += 1
+                print("Total comics scraped: " + str(len(at_dict)) + '\n')
 
     # Write scraped data out to files
-            full_size_scrape.write(f'<img src={cover_fullsize}>')
-            all_scraped.write(f'<a href={cover_fullsize}><img src ={cover_img_thumb}></a>')
-            scraped_img_url.write(cover_fullsize + ', \n')
+            all_scraped.write(f'<div><a href={cover_fullsize_url}><img src ={cover_img_thumb_url}></a><p>{img_dict[itemNo]["caption"]}</p></div>')
+            scraped_img_url.write(cover_fullsize_url + ', \n')
+
+            itemNo += 1
 
         all_scraped.write('<br><hr><br>')
         at_dict.update({issue_title:{'issue wikilink':i, **img_dict}})
 
     import json
-    json.dump(at_dict, open(f'{p}/scraped/thumbnails_w_captions.json', 'w'))
+    json.dump(at_dict, open(f'{p}/scraped/all_scraped_data.json', 'w'))
 
 
 if __name__ == "__main__":

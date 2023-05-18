@@ -28,7 +28,8 @@ def load_check():
                 print("System load is too high")
             exit()
     else:
-        print("Couldn't get the system load")
+        if __name__ == '__main__':
+            print("Couldn't get the system load")
         exit()
 
 
@@ -39,8 +40,10 @@ def parse_scraped_JSON():
         import scraper
         scraper.main()
 
-    jFile = open(f'{p}/scraped/thumbnails_w_captions.json', 'r')
+    jFile = open(f'{p}/scraped/all_scraped_data.json', 'r')
     scraped_data = json.load(jFile)
+
+
 
     print('\n\n')
     for key, val in scraped_data.items():
@@ -60,9 +63,3 @@ if __name__ == '__main__':
     load_check()
     parse_scraped_JSON()
 
-
-# Ok, so the plan here:
-# I need to parse the json and determine how I am going to use the data in that file.
-# first, let's import the object and then pull the first item and print it out and see what is in it
-#
-# We will make it readable
