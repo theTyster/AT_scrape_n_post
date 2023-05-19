@@ -1,5 +1,5 @@
 #! /usr/bin/env python3
-import os, re, requests, sys, timeit
+import os, re, requests, sys
 from pathlib import Path
 from bs4 import BeautifulSoup
 
@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup
 def main(param=None):
 
     # path that scraped data will write out to will be the parent folder of this repo.
-    p = Path(__file__).parents[1]
+    p = Path(__file__).parents[2]
 
     if not param == 'testing':
         if not os.path.exists(f'{p}/scraped'):
@@ -132,7 +132,7 @@ def main(param=None):
             itemNo += 1
 
         all_scraped.write('<br><hr><br>')
-        at_dict.update({issue_title:{'issue wikilink':i, **img_dict}})
+        at_dict.update({issue_title:{'issue wikilink':i, 'images':{**img_dict}}})
 
     import json
     json.dump(at_dict, open(f'{p}/scraped/all_scraped_data.json', 'w'))

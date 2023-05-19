@@ -1,8 +1,10 @@
 #! /usr/bin/env python3
-import subprocess, os, json
+import subprocess, json
 from mastodon import Mastodon
 from auth import akkoma_access_token
+from upload import json_decorator
 from pathlib import Path
+from pprint import pprint as prettify
 
 # set default parameters for a status
 def status(*args, **kwargs):
@@ -10,8 +12,11 @@ def status(*args, **kwargs):
     akko.feature_set = 'pleroma'
     akko.status_post(*args, visibility='direct', language='en', content_type='text/markdown', **kwargs)
 
+# check the load of the server to see if it is a good time to make a post.
+# if the load average is over 100% for the last 5 minutes it will wait the post.
 
-def load_check():
+@json_decorator
+def load_check(scraped_data, p):
     cmd = ['cat', '/proc/loadavg']
     load = subprocess.run(cmd, capture_output=True)
 
@@ -21,8 +26,12 @@ def load_check():
         load = float(load[0])
         print(f'System Load: {load}')
         if load < 3:
-            print("Placeholder for running the actual script")
-            #status("check, please")
+            for image_num, image_data in scraped_data.items():
+                prettify(image_data)
+                exit
+            msg = f'''
+'''
+            status()
         else:
             if __name__ == '__main__':
                 print("System load is too high")
@@ -32,34 +41,5 @@ def load_check():
             print("Couldn't get the system load")
         exit()
 
-
-def parse_scraped_JSON():
-    p = Path(__file__).parents[1]
-
-    if not os.path.exists(f'{p}/scraped'):
-        import scraper
-        scraper.main()
-
-    jFile = open(f'{p}/scraped/all_scraped_data.json', 'r')
-    scraped_data = json.load(jFile)
-
-
-
-    print('\n\n')
-    for key, val in scraped_data.items():
-        print(f'{key} ==> \n')
-        for key0, val0 in val.items():
-            if len([item for item in val0 if item]) == 3:
-                print(f'\t{key0} ==> ')
-                for key1, val1 in val0.items():
-                    print(f'\t\t{key1} ==> {val1}\n')
-            else:
-                print(f'\t{key0} ==> {val0}\n')
-
-        exit()
-
-
 if __name__ == '__main__':
     load_check()
-    parse_scraped_JSON()
-
