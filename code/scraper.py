@@ -1,10 +1,32 @@
 #! /usr/bin/env python3
-import os, re, requests, sys
+import os, re, requests, csv
 from pathlib import Path
 from bs4 import BeautifulSoup
 
+def bonus():
+    # get some cool bmo quotes and put them in a csv because bmo is awesome.
 
-def main(param=None):
+    p = Path(__file__).parents[2]
+    url = 'https://adventuretime.fandom.com/wiki/BMO/Quotes'
+    http = requests.get(url)
+    soup = BeautifulSoup(http.text, 'html.parser')
+
+    quote_tables = soup.find_all('table', class_='cquote')
+    quotes = []
+
+    for par in quote_tables:
+        quotes.append(par.find('p').text)
+
+    #format quotes for csv and print to file
+    for q in quotes:
+        q = q.replace('\n', '')
+        q = q.replace('"', "'")
+        q = f'"{q}",\n'
+        with open(f'{p}/scraped/bmo-quotes.csv', 'a') as a:
+            a.write(q)
+
+
+def main():
 
     # path that scraped data will write out to will be the parent folder of this repo.
     p = Path(__file__).parents[2]
@@ -29,7 +51,7 @@ def main(param=None):
     <style>
       div {
         display: inline-block;
-        padding: 16px; 
+        padding: 16px;
       }
     </style>
   </head>
@@ -41,8 +63,8 @@ def main(param=None):
     # Request the fandom page.
     root_url = "https://adventuretime.fandom.com"
     start_url = root_url + "/wiki/Volumes/Trade_Paperbacks"
-    request = requests.get(start_url)
-    soup = BeautifulSoup(request.text, 'html.parser')
+    http = requests.get(start_url)
+    soup = BeautifulSoup(http.text, 'html.parser')
 
     issues_a = soup.find_all('a', href=re.compile(r'.*issue', flags=re.I))
     issues = set()
@@ -59,8 +81,8 @@ def main(param=None):
 
         all_scraped.write(f'<h2>Link to Comic in the wiki <a href="{i}">here</a>.</h2><br>')
 
-        request = requests.get(i)
-        soup = BeautifulSoup(request.text, 'html.parser')
+        http = requests.get(i)
+        soup = BeautifulSoup(http.text, 'html.parser')
 
         # Find the Issue name
         page_title = soup.title
@@ -111,8 +133,11 @@ def main(param=None):
             thumb_path = f'{p}/scraped/img/{formatted_issue_title}/thumbs/{formatted_issue_title}_item_{itemNo}_thumb{cover_url_split[1]}'
             fullsize_path = f'{p}/scraped/img/{formatted_issue_title}/fullsize/{formatted_issue_title}_item_{itemNo}_full{cover_url_split[1]}'
 
-            open(thumb_path, 'wb').write(get_cover_img_thumb.content)
-            open(fullsize_path, 'wb').write(get_cover_fullsize.content)
+            with open(thumb_path, 'wb') as wb:
+                wb.write(get_cover_img_thumb.content)
+
+            with open(fullsize_path, 'wb') as wb:
+                wb.write(get_cover_fullsize.content)
 
             #format scraped data into a dict object
             try:
@@ -135,11 +160,17 @@ def main(param=None):
         at_dict.update({issue_title:{'issue wikilink':i, 'images':{**img_dict}}})
 
     import json
-    json.dump(at_dict, open(f'{p}/scraped/all_scraped_data.json', 'w'))
+
+    with open(f'{p}/scraped/all_scraped_data.json', 'w') as w:
+        json.dump(at_dict, w)
+
+    # close all files
+    all_scraped.close()
+    scraped_img_url.close()
+    scraped_url.close()
+
+    bonus()
 
 
 if __name__ == "__main__":
-    try:
-        main(sys.argv[1])
-    except IndexError:
-        main()
+        bonus()
