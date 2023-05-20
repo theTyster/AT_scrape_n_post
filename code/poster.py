@@ -1,5 +1,5 @@
 #! /usr/bin/env python3
-import subprocess, json
+import subprocess, json, os, sys
 from mastodon import Mastodon
 from auth import akkoma_access_token
 from upload import json_decorator
@@ -11,7 +11,7 @@ def status(*args, **kwargs):
 
     akko = Mastodon(api_base_url = 'https://thisis.mylegendary.quest', access_token = akkoma_access_token)
     akko.feature_set = 'pleroma'
-    akko.status_post(*args, visibility='direct', language='en', content_type='text/markdown', **kwargs)
+    akko.status_post(*args, language='en', content_type='text/markdown', **kwargs)
 
 
 def quote_of_the_day():
@@ -50,9 +50,13 @@ def comic_post(scraped_data, p):
         issues = list(scraped_data.keys())
         issues.sort() # don't depend on the ordering of dict's to be consistent.
 
-        image_issue = scraped_data[issues[issue_iterator]]
-        images = scraped_data[issues[issue_iterator]]['images']
-        image_id = scraped_data[issues[issue_iterator]]['images'][str(image_iterator)]['id']
+        try:
+            image_issue = scraped_data[issues[issue_iterator]]
+            images = scraped_data[issues[issue_iterator]]['images']
+            image_id = scraped_data[issues[issue_iterator]]['images'][str(image_iterator)]['id']
+        except KeyError as e:
+            print(f'Dict Key Error for: {e}. Did you run upload.py??')
+            exit()
 
         attribute = f"""
 <br>
@@ -61,6 +65,8 @@ def comic_post(scraped_data, p):
 \"{images[str(image_iterator)]['description']}\".
 
 See more in the :at_AdventureTime: wiki at [this link.]({image_issue['issue wikilink']})
+
+[View all the covers](https://thisis.mylegendary.quest/media/AdventureTime/index.html) | [Source Code](https://github.com/twizzay-code/AT_scrape_n_post)
 """
 
         msg = [
@@ -74,11 +80,7 @@ Sometimes when I am sad like finn :at_FinnTheBoy-cry: ,
 I just look at cool arts.
 
 
-Here look at this cool thing I made you.
-
-
-Just kidding it was made by someone eles.
-But I still hope it makes you smile. :at_snailSnail:
+I hope this makes you smile, atleast.
 """,
 f"""
 I am beemo.
@@ -108,7 +110,7 @@ Ok, I only did that one time. And, yes,  there was a ramp. >.>
 Stop looking at me like that and look at this instead.
 """,
 f"""
-Hello. word. 🏻
+Hello. word. 
 
 
 :at_bmoWave:
@@ -146,6 +148,8 @@ Anyway, here's a picture or something.
 
     # every time a comic is posted it will be a different one.
     iterator_file = f'iterations/comic-post'
+    if not os.path.exists('iterations'):
+        os.mkdir('iterations')
 
     try:
         with open(iterator_file, 'r') as r:
@@ -188,7 +192,7 @@ Anyway, here's a picture or something.
 
 
 @json_decorator
-def nice_comic_post(scraped_data, p):
+def nice_post(scraped_data, p):
 # check the load of the server to see if it is a good time to make a post.
 # if the load average is over 100% for the last 5 minutes it will wait the post.
 
@@ -200,8 +204,12 @@ def nice_comic_post(scraped_data, p):
         load = load.split()
         load = float(load[0])
         print(f'System Load: {load}')
-        if load < 3:
-            comic_post(scraped_data, p)
+        if load < 1:
+            try:
+                sys.argv[1] == 'quote_of_the_day'
+                quote_of_the_day()
+            except IndexError:
+                comic_post(scraped_data, p)
 
         else:
             if __name__ == '__main__':
@@ -214,5 +222,4 @@ def nice_comic_post(scraped_data, p):
 
 
 if __name__ == '__main__':
-    nice_comic_post()
-    #quote_of_the_day()
+    nice_post()

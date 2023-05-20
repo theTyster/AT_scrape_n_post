@@ -31,12 +31,11 @@ def main():
     # path that scraped data will write out to will be the parent folder of this repo.
     p = Path(__file__).parents[2]
 
-    if not param == 'testing':
-        if not os.path.exists(f'{p}/scraped'):
-            os.mkdir(f'{p}/scraped')
-        else:
-            print('Scrape directory already exists. Please move/rename the current directory.')
-            exit()
+    if not os.path.exists(f'{p}/scraped'):
+        os.mkdir(f'{p}/scraped')
+    else:
+        print('Scrape directory already exists. Please move/rename the current directory.')
+        exit()
 
     all_scraped = open(f'{p}/scraped/all_scraped_data.html', 'a')
     scraped_img_url = open(f'{p}/scraped/fullsize_covers.csv', 'a')
@@ -173,4 +172,4 @@ def main():
 
 
 if __name__ == "__main__":
-        bonus()
+        main()
