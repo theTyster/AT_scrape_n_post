@@ -4,7 +4,6 @@ from mastodon import Mastodon
 from auth import akkoma_access_token
 from upload import json_decorator
 from pathlib import Path
-from pprint import pprint as prettify
 
 
 def status(*args, **kwargs):
@@ -46,25 +45,25 @@ def quote_of_the_day():
 
 
 def comic_post(scraped_data, p):
+    def send(issue_iterator, image_iterator, msg_iterator):
 
-
-    def send(r):
         issues = list(scraped_data.keys())
-        print(len(issues))
-        print(issues[171])
-        exit()
         issues.sort() # don't depend on the ordering of dict's to be consistent.
-        for i in issues:
-            for image_num, image_data in scraped_data[i]['images'].items():
-                attribute = f"""
+
+        image_issue = scraped_data[issues[issue_iterator]]
+        images = scraped_data[issues[issue_iterator]]['images']
+        image_id = scraped_data[issues[issue_iterator]]['images'][str(image_iterator)]['id']
+
+        attribute = f"""
 <br>
 <hr>
 
-\"{image_data['description']}\".
+\"{images[str(image_iterator)]['description']}\".
 
-See more in the :at_AdventureTime: wiki at [this link.]({scraped_data[i]['issue wikilink']})
+See more in the :at_AdventureTime: wiki at [this link.]({image_issue['issue wikilink']})
 """
-                msg = [
+
+        msg = [
 f"""
 oh my glob. :at_bongocatbmo:
 
@@ -73,7 +72,10 @@ Look. at this rad comic book cover I found. :at_JakeTheDog-heartEyes:
 f"""
 Sometimes when I am sad like finn :at_FinnTheBoy-cry: ,
 I just look at cool arts.
+
+
 Here look at this cool thing I made you.
+
 
 Just kidding it was made by someone eles.
 But I still hope it makes you smile. :at_snailSnail:
@@ -81,12 +83,15 @@ But I still hope it makes you smile. :at_snailSnail:
 f"""
 I am beemo.
 One day you will be old and also you will be dead.
+
+
 But it's ok, because I will still be here posting cool pictures for you.
 """,
 f"""
 What time is it??
 It's not adventure time.
 That's not what the internet is for I dont think.
+
 
 But, that is ok because it is comic book time!
 :at_AdventureTime:
@@ -99,17 +104,21 @@ f"""
 Did you know that I can ollie over a sandwhich *while* looking awesome.
 Ok, I only did that one time. And, yes,  there was a ramp. >.>
 
+
 Stop looking at me like that and look at this instead.
 """,
 f"""
 Hello. word. 🏻
 
+
 :at_bmoWave:
+
 
 Have some cool comic book cover art!
 """,
 f"""
 I shall never enjoy the pleasures of skinny dipping.
+
 
 But, I do enjoy cool looking pictures. Here's one of my favorites.
 """,
@@ -117,35 +126,22 @@ f"""
 Did you know I have a brother named allmo :at_all-mo: ?
 He's pretty cool.
 
+
 They can't move or anything though.
+
 
 Did you know that me and Air are still going steady?
 Lorraine is so jealous. :chickenroll:
 Don't tell ricky. 🐀 He's always trying to move in on my turf.
 
+
 Anyway, here's a picture or something.
 """]
 
-                if (r >= 0) and (r <= 18): #19
-                    msg = msg[0]
-                if (r >= 19) and (r <= 37): #19
-                    msg = msg[1]
-                if (r >= 38) and (r <= 56): #19
-                    msg = msg[2]
-                if (r >= 57) and (r <= 85): #19
-                    msg = msg[3]
-                if (r >= 86) and (r <= 94): #19
-                    msg = msg[4]
-                if (r >= 95) and (r <= 113): #19
-                    msg = msg[5]
-                if (r >= 114) and (r <= 132): #19
-                    msg = msg[6]
-                if (r >= 133) and (r <= 151): #19
-                    msg = msg[7]
-                if (r >= 152) and (r <= 171): #20 intentional.
-                    msg = msg[8]
+        msg = msg[msg_iterator]
 
-            print((msg + attribute), media_ids=image_data['id'])
+        status((msg + attribute), media_ids=image_id)
+        return images
 
 
     # every time a comic is posted it will be a different one.
@@ -153,22 +149,42 @@ Anyway, here's a picture or something.
 
     try:
         with open(iterator_file, 'r') as r:
-            pass
-    except FileNotFoundError:
+            int(r.readline())
+            int(r.readline())
+            int(r.readline())
+    except (FileNotFoundError, ValueError):
         with open(iterator_file, 'w') as w:
-            w.write('0')
+            w.write('0\n0\n0')
 
     with open(iterator_file, 'r') as r:
-        r = int(r.read())
-        if r > 171:
-            r = 0
-            send(r)
-            with open(iterator_file, 'w') as w:
-                w.write(r)
-        else:
-            send(r)
-            with open(iterator_file, 'w') as w:
-                w.write(r+1)
+        issue_iterator = int(r.readline())
+        image_iterator = int(r.readline())
+        msg_iterator = int(r.readline())
+
+
+    if issue_iterator > 171:
+        issue_iterator = 0
+
+    if msg_iterator > 8:
+        msg_iterator = 0
+
+    images = send(issue_iterator, image_iterator, msg_iterator)
+
+    image_keys = [int(key) for key in images.keys()]
+    if (image_iterator + 1) in image_keys:
+        image_iterator = (image_iterator + 1)
+    else:
+        image_iterator = '0'
+
+    issue_iterator += 1
+    msg_iterator += 1
+
+    with open(iterator_file, 'w') as w:
+        w.write(str(issue_iterator) + '\n')
+    with open(iterator_file, 'a') as a:
+        a.write(str(image_iterator) + '\n')
+    with open(iterator_file, 'a') as a:
+        a.write(str(msg_iterator))
 
 
 @json_decorator
