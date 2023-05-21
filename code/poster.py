@@ -147,6 +147,7 @@ Anyway, here's a picture or something.
     if not os.path.exists('iterations'):
         os.mkdir('iterations')
 
+    # checks if the file already exists. Creates them if they don't.
     try:
         with open(iterator_file, 'r') as r:
             int(r.readline())
@@ -156,6 +157,7 @@ Anyway, here's a picture or something.
         with open(iterator_file, 'w') as w:
             w.write('0\n0\n0')
 
+    # reads the current iteration.
     with open(iterator_file, 'r') as r:
         issue_iterator = int(r.readline())
         image_iterator = int(r.readline())
@@ -175,8 +177,8 @@ Anyway, here's a picture or something.
         image_iterator = (image_iterator + 1)
     else:
         image_iterator = '0'
+        issue_iterator += 1
 
-    issue_iterator += 1
     msg_iterator += 1
 
     with open(iterator_file, 'w') as w:
