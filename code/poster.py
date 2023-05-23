@@ -62,40 +62,33 @@ def comic_post(scraped_data, p):
 <br>
 <hr>
 
-\"{images[str(image_iterator)]['description']}\".
-<br>
-See more in the :at_AdventureTime: wiki at [this link.]({image_issue['issue wikilink']})
-<br>
+Attributed as: [\"{images[str(image_iterator)]['description']}\"]({image_issue['issue wikilink']}).
 [View all the covers](https://thisis.mylegendary.quest/media/AdventureTime/index.html) | [Source Code](https://github.com/twizzay-code/AT_scrape_n_post)
 """
 
         msg = [
 f"""
 oh my glob. :at_bongocatbmo:
-<br>
-<br>
+
 Look. at this rad comic book cover I found. :at_JakeTheDog-heartEyes:
 """,
 f"""
 Sometimes when I am sad like finn :at_FinnTheBoy-cry: ,
 I just look at cool arts.
-<br>
-<br>
+
 I hope this makes you smile, atleast.
 """,
 f"""
 I am beemo.
 One day you will be old and also you will be dead.
-<br>
-<br>
+
 But it's ok, because I will still be here posting cool pictures for you.
 """,
 f"""
 What time is it??
 It's not adventure time.
 That's not what the internet is for I dont think.
-<br>
-<br>
+
 But, that is ok because it is comic book time!
 :at_AdventureTime:
 :at_FinnJake-fistbump:
@@ -106,32 +99,29 @@ I do not post anything that is not either cool and/or awesome.
 f"""
 Did you know that I can ollie over a sandwhich *while* looking awesome.
 Ok, I only did that one time. And, yes,  there was a ramp. >.>
-<br>
+
 Stop looking at me like that and look at this instead.
 """,
 f"""
 Hello. word. 
-<br>
+
 :at_bmoWave:
-<br>
+
 Have some cool comic book cover art!
 """,
 f"""
 I shall never enjoy the pleasures of skinny dipping.
-<br>
-<br>
+
 But, I do enjoy cool looking pictures. Here's one of my favorites.
 """,
 f"""
 Did you know I have a brother named allmo :at_all-mo: ?
 He's pretty cool.
-<br>
-<br>
+
 Did you know that me and Air are still going steady?
 Lorraine is so jealous. :chickenroll:
 Don't tell ricky. 🐀 He's always trying to move in on my turf.
-<br>
-<br>
+
 Did you know that me and Air are still going steady?
 Anyway, here's a picture or something.
 """]
