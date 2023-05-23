@@ -59,11 +59,11 @@ def comic_post(scraped_data, p):
             exit()
 
         attribute = f"""
-<br>
 <hr>
-
-Attributed as: [\"{images[str(image_iterator)]['description']}\"]({image_issue['issue wikilink']}).
-[View all the covers](https://thisis.mylegendary.quest/media/AdventureTime/index.html) | [Source Code](https://github.com/twizzay-code/AT_scrape_n_post)
+<br>
+[This Comic]({image_issue['issue wikilink']}) |
+[All covers](https://thisis.mylegendary.quest/media/AdventureTime/index.html) |
+[Code](https://github.com/twizzay-code/AT_scrape_n_post)
 """
 
         msg = [
