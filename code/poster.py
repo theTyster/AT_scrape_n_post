@@ -115,14 +115,9 @@ I shall never enjoy the pleasures of skinny dipping.
 But, I do enjoy cool looking pictures. Here's one of my favorites.
 """,
 f"""
-Did you know I have a brother named allmo :at_all-mo: ?
+Did you know I have a brother named allmo? :at_all-mo:
 He's pretty cool.
 
-Did you know that me and Air are still going steady?
-Lorraine is so jealous. :chickenroll:
-Don't tell ricky. 🐀 He's always trying to move in on my turf.
-
-Did you know that me and Air are still going steady?
 Anyway, here's a picture or something.
 """]
 
