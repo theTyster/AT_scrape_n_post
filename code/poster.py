@@ -62,7 +62,7 @@ def comic_post(scraped_data, p):
 <hr>
 <br>
 [This Comic]({image_issue['issue wikilink']}) |
-[All covers](https://thisis.mylegendary.quest/media/AdventureTime/index.html) |
+[All covers](https://thisis.mylegendary.quest/images/AdventureTime/index.html) |
 [Code](https://github.com/twizzay-code/AT_scrape_n_post)
 """
 
