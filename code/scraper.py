@@ -139,15 +139,15 @@ def main():
                 wb.write(get_cover_fullsize.content)
 
             #format scraped data into a dict object
-            try:
+            if caption:
                 img_dict.update({itemNo:{'thumbnail':thumb_path, 'caption':caption.text, 'full image':fullsize_path}})
-            except AttributeError:
+            elif not caption:
                 img_dict.update({itemNo:{'thumbnail':thumb_path, 'caption':"No Attribution Provided", 'full image':fullsize_path}})
 
             #if running from cli. Print info to console.
             if __name__ == '__main__':
                 print(f'Scraped from: {i}.')
-                print("Total comics scraped: " + str(len(at_dict)) + '\n')
+                print("Total comics scraped: " + str(len(at_dict)) + '/170' + '\n')
 
     # Write scraped data out to files
             all_scraped.write(f'<div><a href={cover_fullsize_url}><img src ={cover_img_thumb_url}></a><p>{img_dict[itemNo]["caption"]}</p></div>')
@@ -156,7 +156,8 @@ def main():
             itemNo += 1
 
         all_scraped.write('<br><hr><br>')
-        at_dict.update({issue_title:{'issue wikilink':i, 'images':{**img_dict}}})
+        if img_dict:
+            at_dict.update({issue_title:{'issue wikilink':i, 'images':{**img_dict}}})
 
     import json
 

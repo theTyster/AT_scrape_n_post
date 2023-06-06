@@ -19,6 +19,7 @@ def quote_of_the_day():
     p = Path(__file__).parents[2]
 
     with open(f'{p}/scraped/bmo-quotes.csv', 'r') as quotes_csv:
+        quotes_len = len(r.readlines())
         quotes = quotes_csv.read().split(',\n')
         quotes.pop() # removes the weird space that appears as the last item in the list.
 
@@ -33,7 +34,7 @@ def quote_of_the_day():
 
     with open(iterator_file, 'r') as r:
         r = int(r.read())
-        if r > 25:
+        if r > quotes_len:
             r = 0
             status(':at_bmo: 💬  ' + quotes[r] + '\r #bmoQuoteOfTheDay')
             with open(iterator_file, 'w') as w:
@@ -45,28 +46,7 @@ def quote_of_the_day():
 
 
 def comic_post(scraped_data, p):
-    def send(issue_iterator, image_iterator, msg_iterator):
-
-        issues = list(scraped_data.keys())
-        issues.sort() # don't depend on the ordering of dict's to be consistent.
-
-        try:
-            image_issue = scraped_data[issues[issue_iterator]]
-            images = scraped_data[issues[issue_iterator]]['images']
-            image_id = scraped_data[issues[issue_iterator]]['images'][str(image_iterator)]['id']
-        except KeyError as e:
-            print(f'Dict Key Error for: {e}. Did you run upload.py??')
-            exit()
-
-        attribute = f"""
-<hr>
-<br>
-[This Comic]({image_issue['issue wikilink']}) |
-[All covers](https://thisis.mylegendary.quest/images/AdventureTime/index.html) |
-[Code](https://github.com/twizzay-code/AT_scrape_n_post)
-"""
-
-        msg = [
+    msg = [
 f"""
 oh my glob. :at_bongocatbmo:
 
@@ -103,7 +83,7 @@ Ok, I only did that one time. And, yes,  there was a ramp. >.>
 Stop looking at me like that and look at this instead.
 """,
 f"""
-Hello. word. 
+Hello. word.
 
 :at_bmoWave:
 
@@ -120,11 +100,6 @@ He's pretty cool.
 
 Anyway, here's a picture or something.
 """]
-
-        msg = msg[msg_iterator]
-
-        status((msg + attribute), media_ids=image_id)
-        return images
 
 
     # every time a comic is posted it will be a different one.
@@ -149,13 +124,41 @@ Anyway, here's a picture or something.
         msg_iterator = int(r.readline())
 
 
-    if issue_iterator > 171:
+    if issue_iterator > len(scraped_data.keys()):
         issue_iterator = 0
 
-    if msg_iterator > 8:
+    if msg_iterator > len(msg):
         msg_iterator = 0
 
-    images = send(issue_iterator, image_iterator, msg_iterator)
+    def send(msg, issue_iterator, image_iterator, msg_iterator):
+
+        issues = list(scraped_data.keys())
+        issues.sort() # don't depend on the ordering of dict's to be consistent.
+
+        try:
+            image_issue = scraped_data[issues[issue_iterator]]
+            images = scraped_data[issues[issue_iterator]]['images']
+            image_id = scraped_data[issues[issue_iterator]]['images'][str(image_iterator)]['id']
+        except KeyError as e:
+            print(f'Dict Key Error for: {e}. Did you run upload.py??')
+            exit()
+
+
+        msg = msg[msg_iterator]
+        attribute = f"""
+<hr>
+<br>
+[This Comic]({image_issue['issue wikilink']}) |
+[All covers](https://thisis.mylegendary.quest/images/AdventureTime/index.html) |
+[Code](https://github.com/twizzay-code/AT_scrape_n_post)
+"""
+
+
+        status((msg + attribute), media_ids=image_id)
+        return images
+
+
+    images = send(msg, issue_iterator, image_iterator, msg_iterator)
 
     image_keys = [int(key) for key in images.keys()]
     if (image_iterator + 1) in image_keys:
