@@ -19,7 +19,9 @@ def quote_of_the_day():
     p = Path(__file__).parents[2]
 
     with open(f'{p}/scraped/bmo-quotes.csv', 'r') as quotes_csv:
-        quotes_len = len(r.readlines())
+        quotes_len = len(quotes_csv.readlines())
+
+    with open(f'{p}/scraped/bmo-quotes.csv', 'r') as quotes_csv:
         quotes = quotes_csv.read().split(',\n')
         quotes.pop() # removes the weird space that appears as the last item in the list.
 
@@ -190,7 +192,7 @@ def nice_post(scraped_data, p):
         load = load.split()
         load = float(load[0])
         print(f'System Load: {load}')
-        if load < 1:
+        if load < 5:
             try:
                 sys.argv[1] == 'quote_of_the_day'
                 quote_of_the_day()
