@@ -129,7 +129,7 @@ Anyway, here's a picture or something.
     if issue_iterator > len(scraped_data.keys()):
         issue_iterator = 0
 
-    if msg_iterator > len(msg):
+    if msg_iterator == len(msg):
         msg_iterator = 0
 
     def send(msg, issue_iterator, image_iterator, msg_iterator):
@@ -192,7 +192,7 @@ def nice_post(scraped_data, p):
         load = load.split()
         load = float(load[0])
         print(f'System Load: {load}')
-        if load < 5:
+        if load < 2:
             try:
                 sys.argv[1] == 'quote_of_the_day'
                 quote_of_the_day()
