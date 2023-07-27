@@ -126,7 +126,7 @@ Anyway, here's a picture or something.
         msg_iterator = int(r.readline())
 
 
-    if issue_iterator > len(scraped_data.keys()):
+    if issue_iterator >= len(scraped_data.keys()):
         issue_iterator = 0
 
     if msg_iterator == len(msg):
