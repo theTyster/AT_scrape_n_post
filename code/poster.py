@@ -153,7 +153,6 @@ Anyway, here's a picture or something.
 [This Comic]({image_issue['issue wikilink']}) |
 [All covers](https://thisis.mylegendary.quest/images/AdventureTime/index.html) |
 [Code](https://github.com/twizzay-code/AT_scrape_n_post)
-<br>
 #AdventureTime #Cartoons #Comics #Art
 """
 # TODO: Scrape data about the comic that can be used in making relevant hashtags.
