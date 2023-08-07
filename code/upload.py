@@ -43,13 +43,14 @@ def main(scraped_data, p):
 #    try:
     for i in issues:
         for image_num, image_data in scraped_data[i]['images'].items():
+            #TODO: Move these to the poster.py and remove a mass uploader.
             full_image = image_data['full image']
             media_dict = upload(full_image, description = image_data['caption'])
             image_data.update(media_dict)
             del image_data['caption']
-#    except KeyError:
-#        print('You already did this!')
-#        exit()
+    except KeyError:
+        print('You already did this!')
+        exit()
 
     prettify(scraped_data)
 
