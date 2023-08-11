@@ -2,16 +2,42 @@
 import subprocess, json, os, sys
 from mastodon import Mastodon
 from auth import akkoma_access_token
-from upload import json_decorator
 from pathlib import Path
 
 
 def status(*args, **kwargs):
 # set default parameters for a status
-
     akko = Mastodon(api_base_url = 'https://thisis.mylegendary.quest', access_token = akkoma_access_token)
     akko.feature_set = 'pleroma'
     akko.status_post(*args, language='en', content_type='text/markdown', **kwargs)
+
+
+# set default parameters for media uploads
+def upload(*args, **kwargs):
+    akko = Mastodon(api_base_url = 'https://thisis.mylegendary.quest', access_token = akkoma_access_token)
+    akko.feature_set = 'pleroma'
+    image_id = akko.media_post(*args, mime_type='image/jpeg', **kwargs)
+    return image_id.id
+
+
+# checks if the images have been scraped and scrapes them if not. 
+# provides access to the json file containing all scraped info.
+def json_decorator(f):
+    def wrapper():
+        p = Path(__file__).parents[2]
+
+        if not os.path.exists(f'{p}/scraped'):
+            import scraper
+
+            if __name__ == '__main__':
+                print('Scraping Data...')
+
+            scraper.main()
+
+        jFile = open(f'{p}/scraped/all_scraped_data.json', 'r')
+        scraped_data = json.load(jFile)
+        f(scraped_data, p)
+    return wrapper
 
 
 def quote_of_the_day():
@@ -140,9 +166,11 @@ Anyway, here's a picture or something.
         try:
             image_issue = scraped_data[issues[issue_iterator]]
             images = scraped_data[issues[issue_iterator]]['images']
-            image_id = scraped_data[issues[issue_iterator]]['images'][str(image_iterator)]['id']
+            full_image = scraped_data[issues[issue_iterator]]['images'][str(image_iterator)]['full image']
+            image_id = str(upload(full_image, description = images[str(image_iterator)]['caption']))
+
         except KeyError as e:
-            print(f'Dict Key Error for: {e}. Did you run upload.py??')
+            print(f'Dict Key Error for: {e}. Image upload failed.')
             exit()
 
 
@@ -151,8 +179,9 @@ Anyway, here's a picture or something.
 <hr>
 <br>
 [This Comic]({image_issue['issue wikilink']}) |
-[All covers](https://thisis.mylegendary.quest/images/AdventureTime/index.html) |
+[All covers](https://adventuretime.fandom.com/wiki/Adventure_Time_Comic_Covers) |
 [Code](https://github.com/twizzay-code/AT_scrape_n_post)
+<br>
 #AdventureTime #Cartoons #Comics #Art
 """
 # TODO: Scrape data about the comic that can be used in making relevant hashtags.
