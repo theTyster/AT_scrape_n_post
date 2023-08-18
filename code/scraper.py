@@ -115,7 +115,7 @@ def main():
             get_cover_img_thumb = requests.get(cover_img_thumb_url)
 
             # format the image src url to get the full-size image.
-            cover_url_split = re.split(r'(.png|.gif|.jpg|.jpeg|.webp)', cover_img_thumb_url,  maxsplit=1, flags=re.I)
+            cover_url_split = re.split(r'(\.png|\.gif|\.jpg|\.jpeg|\.webp)', cover_img_thumb_url,  maxsplit=1, flags=re.I)
             cover_fullsize_url = cover_url_split[0] + cover_url_split[1]
             get_cover_fullsize = requests.get(cover_fullsize_url)
 
@@ -149,7 +149,7 @@ def main():
                 print(f'Scraped from: {i}.')
                 print("Total comics scraped: " + str(len(at_dict)) + '/170' + '\n')
 
-    # Write scraped data out to files
+            # Write scraped data out to files
             all_scraped.write(f'<div><a href={cover_fullsize_url}><img src ={cover_img_thumb_url}></a><p>{img_dict[itemNo]["caption"]}</p></div>')
             scraped_img_url.write(cover_fullsize_url + ', \n')
 
