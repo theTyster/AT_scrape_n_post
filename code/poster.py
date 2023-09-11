@@ -180,7 +180,7 @@ Anyway, here's a picture or something.
 <br>
 [This Comic]({image_issue['issue wikilink']}) |
 [All covers](https://adventuretime.fandom.com/wiki/Adventure_Time_Comic_Covers) |
-[Code](https://github.com/twizzay-code/AT_scrape_n_post)
+[Code](https://git.mylegendary.quest/twizzay/AT_scrape_n_post)
 <br>
 #AdventureTime #Cartoons #Comics #Art
 """
