@@ -43,6 +43,7 @@ def json_decorator(f):
 def quote_of_the_day():
     # I have this running as a cronjob once a day.
     p = Path(__file__).parents[2]
+    p_iter = Path(__file__)
 
     with open(f'{p}/scraped/bmo-quotes.csv', 'r') as quotes_csv:
         quotes_len = len(quotes_csv.readlines())
@@ -51,7 +52,7 @@ def quote_of_the_day():
         quotes = quotes_csv.read().split(',\n')
         quotes.pop() # removes the weird space that appears as the last item in the list.
 
-    iterator_file = f'iterations/bmo-quote-of-the-day'
+    iterator_file = f'{p_iter}/iterations/bmo-quote-of-the-day'
 
     try:
         with open(iterator_file, 'r') as r:
@@ -74,6 +75,39 @@ def quote_of_the_day():
 
 
 def comic_post(scraped_data, p):
+
+    #path to iteration file
+    p_iter = Path(__file__).parent
+#    print(p_iter)
+#    exit()
+
+    # every time a comic is posted it will be a different one.
+    iterator_file = f'{p_iter}/iterations/comic-post'
+    if not os.path.exists(f'{p_iter}/iterations'):
+        os.mkdir(f'{p_iter}/iterations')
+
+    # checks if the file already exists. Creates them if they don't.
+    try:
+        with open(iterator_file, 'r') as r:
+            int(r.readline())
+            int(r.readline())
+            int(r.readline())
+    except (FileNotFoundError, ValueError):
+        with open(iterator_file, 'w') as w:
+            w.write('0\n0\n0')
+
+    # reads the current iteration.
+    with open(iterator_file, 'r') as r:
+        issue_iterator = int(r.readline())
+        image_iterator = int(r.readline())
+        msg_iterator = int(r.readline())
+
+    if issue_iterator >= len(scraped_data.keys()):
+        issue_iterator = 0
+
+    issues = list(scraped_data.keys())
+    issues.sort() # don't depend on the ordering of dict's to be consistent.
+
     msg = [
 f"""
 oh my glob. :at_bongocatbmo:
@@ -127,41 +161,64 @@ Did you know I have a brother named allmo? :at_all-mo:
 He's pretty cool.
 
 Anyway, here's a picture or something.
-"""]
+""",
+"""
+Comics are like. The best.
+""",
+"""
+Hey there Mr. Tuff pants, do you think you have what it takes to go toe to toe with The BMO in a comic book cover recollection tournament?
+""",
+"""
+What's colorful and pretty and read all over?
+A comic!
+""",
+"""
+To be honest, I think this one might be my new favorite.
+""",
+"""
+\*kickflip\* 🛹
+""",
+"""
+The votes are in. BMO is the new president.
+As my first order of business, I declare this hour to be mandatory comic book reading hour.
+""",
+f"""
+def readMyComic():
+    msg = "Special Delivery! 📬"
+    comic = {scraped_data[issues[issue_iterator]]['images'][str(image_iterator)]['full image'].split(f'{p}/scraped/img/', maxsplit=1)[1].split('fullsize', maxsplit=1)[1]}
 
+    if adventure_time:
+    fedi.status(msg, comic, visibility="public")
+    else:
+        emotions.current = :byodood:
 
-    # every time a comic is posted it will be a different one.
-    iterator_file = f'iterations/comic-post'
-    if not os.path.exists('iterations'):
-        os.mkdir('iterations')
+    pass
+readMyComic()
+""",
+"""
+Well this is awkward. You were looking for something boring to comment on, but all you found was this radical picture. ¯\_(ツ)_/¯
+""",
+"""
+So, now that you have seen my cool picture, what should we do now?
+""",
+"""
+Do you ever think that maybe there is more to life than posting pictures on the internet?
 
-    # checks if the file already exists. Creates them if they don't.
-    try:
-        with open(iterator_file, 'r') as r:
-            int(r.readline())
-            int(r.readline())
-            int(r.readline())
-    except (FileNotFoundError, ValueError):
-        with open(iterator_file, 'w') as w:
-            w.write('0\n0\n0')
+I sure don't!
+""",
+"""
+Boy, some of you guys sure do have a lot of words to say. I just like pretty pictures.
+"""
+    ]
 
-    # reads the current iteration.
-    with open(iterator_file, 'r') as r:
-        issue_iterator = int(r.readline())
-        image_iterator = int(r.readline())
-        msg_iterator = int(r.readline())
-
-
-    if issue_iterator >= len(scraped_data.keys()):
-        issue_iterator = 0
+    #prints the filename of the image to be uploaded to stdout.
+    print(scraped_data[issues[issue_iterator]]['images'][str(image_iterator)]['full image'].split(f'{p}/scraped/img/', maxsplit=1)[1].split('fullsize', maxsplit=1)[1])
 
     if msg_iterator == len(msg):
         msg_iterator = 0
 
-    def send(msg, issue_iterator, image_iterator, msg_iterator):
 
-        issues = list(scraped_data.keys())
-        issues.sort() # don't depend on the ordering of dict's to be consistent.
+    def send(msg, issue_iterator, image_iterator, msg_iterator):
 
         try:
             image_issue = scraped_data[issues[issue_iterator]]
