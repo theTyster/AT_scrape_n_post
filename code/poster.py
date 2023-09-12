@@ -169,7 +169,7 @@ Comics are like. The best.
 Hey there Mr. Tuff pants, do you think you have what it takes to go toe to toe with The BMO in a comic book cover recollection tournament?
 """,
 """
-What's colorful and pretty and read all over?
+What's colorful and pretty and red all over?
 A comic!
 """,
 """
