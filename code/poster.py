@@ -1,24 +1,35 @@
 #! /usr/bin/env python3
 import subprocess, json, os, sys
 from mastodon import Mastodon
-from auth import akkoma_access_token
+from auth import pleroma_access_token
 from pathlib import Path
 
 
+# set default parameters for statuses
 def status(*args, **kwargs):
 # set default parameters for a status
-    akko = Mastodon(api_base_url = 'https://thisis.mylegendary.quest', access_token = akkoma_access_token)
-    akko.feature_set = 'pleroma'
-    akko.status_post(*args, language='en', content_type='text/markdown', **kwargs)
+    pler = Mastodon(api_base_url = 'https://thisis.mylegendary.quest', access_token = pleroma_access_token)
+    pler.feature_set = 'pleroma'
+    status_id = pler.status_post(*args, language='en', content_type='text/markdown', **kwargs)
+    return status_id.id
 
 
 # set default parameters for media uploads
 def upload(*args, **kwargs):
-    akko = Mastodon(api_base_url = 'https://thisis.mylegendary.quest', access_token = akkoma_access_token)
-    akko.feature_set = 'pleroma'
-    image_id = akko.media_post(*args, mime_type='image/jpeg', **kwargs)
+    pler = Mastodon(api_base_url = 'https://thisis.mylegendary.quest', access_token = pleroma_access_token)
+    pler.feature_set = 'pleroma'
+    image_id = pler.media_post(*args, mime_type='image/jpeg', **kwargs)
     return image_id.id
 
+def pin(*args):
+    pler = Mastodon(api_base_url = 'https://thisis.mylegendary.quest', access_token = pleroma_access_token)
+    pler.feature_set = 'pleroma'
+    pler.status_pin(*args)
+
+def unpin(*args):
+    pler = Mastodon(api_base_url = 'https://thisis.mylegendary.quest', access_token = pleroma_access_token)
+    pler.feature_set = 'pleroma'
+    pler.status_unpin(*args)
 
 # checks if the images have been scraped and scrapes them if not. 
 # provides access to the json file containing all scraped info.
@@ -43,7 +54,7 @@ def json_decorator(f):
 def quote_of_the_day():
     # I have this running as a cronjob once a day.
     p = Path(__file__).parents[2]
-    p_iter = Path(__file__)
+    p_iter = Path(__file__).parent
 
     with open(f'{p}/scraped/bmo-quotes.csv', 'r') as quotes_csv:
         quotes_len = len(quotes_csv.readlines())
@@ -54,6 +65,7 @@ def quote_of_the_day():
 
     iterator_file = f'{p_iter}/iterations/bmo-quote-of-the-day'
 
+    # creates the iterator file if it doesn't exist
     try:
         with open(iterator_file, 'r') as r:
             pass
@@ -61,25 +73,41 @@ def quote_of_the_day():
         with open(iterator_file, 'w') as w:
             w.write('0')
 
+    # gets the iteration for the quote and the id for yesterdays pinned quote
     with open(iterator_file, 'r') as r:
-        r = int(r.read())
-        if r > quotes_len:
-            r = 0
-            status(':at_bmo: 💬  ' + quotes[r] + '\r #bmoQuoteOfTheDay')
-            with open(iterator_file, 'w') as w:
-                w.write(str(r))
-        else:
-            status(':at_bmo: 💬  ' + quotes[r] + '\r #bmoQuoteOfTheDay')
-            with open(iterator_file, 'w') as w:
-                w.write(str(r+1))
+        i = int(r.readline())
+        try:
+            pin_current = r.readline()
+        except ValueError:
+            pin_current = None
+
+    # posts todays quote and writes the id and iteration out to file.
+    if i == quotes_len:
+        i = 0
+        pin_next = status(':at_bmo: 💬  ' + quotes[i] + '\r #bmoQuoteOfTheDay')
+        print(quotes[i])
+        with open(iterator_file, 'w') as w:
+            w.write(str(i))
+            w.write('\n' + str(pin_next))
+    else:
+        pin_next = status(':at_bmo: 💬  ' + quotes[i] + '\r #bmoQuoteOfTheDay')
+        print(quotes[i])
+        with open(iterator_file, 'w') as w:
+            w.write(str(i+1))
+            w.write('\n' + str(pin_next))
+
+    # unpins yesterdays quote and pins todays
+    if pin_current:
+        unpin(pin_current)
+        pin(pin_next)
+    else:
+        pin(pin_next)
 
 
 def comic_post(scraped_data, p):
 
     #path to iteration file
     p_iter = Path(__file__).parent
-#    print(p_iter)
-#    exit()
 
     # every time a comic is posted it will be a different one.
     iterator_file = f'{p_iter}/iterations/comic-post'
@@ -196,7 +224,7 @@ def readMyComic():
 readMyComic()
 """,
 """
-Well this is awkward. You were looking for something boring to comment on, but all you found was this radical picture. ¯\_(ツ)_/¯
+Well this is awkward. You were looking for something boring to comment on, but all you found was this radical picture. ¯\\\_(ツ)\_/¯
 """,
 """
 So, now that you have seen my cool picture, what should we do now?
@@ -208,6 +236,9 @@ I sure don't!
 """,
 """
 Boy, some of you guys sure do have a lot of words to say. I just like pretty pictures.
+""",
+"""
+LEEEEEEEEEROOOOYYY
 """
     ]
 
