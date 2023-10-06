@@ -195,6 +195,8 @@ Comics are like. The best.
 """,
 """
 Hey there Mr. Tuff pants, do you think you have what it takes to go toe to toe with The BMO in a comic book cover recollection tournament?
+
+[Try me, Hot Stuff](https://mylegendary.quest/unlisted/Memory_Game/index.html).
 """,
 """
 What's colorful and pretty and red all over?
@@ -268,7 +270,8 @@ LEEEEEEEEEROOOOYYY
 <br>
 [This Comic]({image_issue['issue wikilink']}) |
 [All covers](https://adventuretime.fandom.com/wiki/Adventure_Time_Comic_Covers) |
-[Code](https://git.mylegendary.quest/twizzay/AT_scrape_n_post)
+[Code](https://git.mylegendary.quest/twizzay/AT_scrape_n_post) |
+[BMO's Comic Memory Game](https://mylegendary.quest/unlisted/Memory_Game/index.html)
 <br>
 #AdventureTime #Cartoons #Comics #Art
 """
