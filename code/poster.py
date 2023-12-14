@@ -241,7 +241,11 @@ Boy, some of you guys sure do have a lot of words to say. I just like pretty pic
 """,
 """
 LEEEEEEEEEROOOOYYY
+""",
 """
+| (• ◡•)|     (❍ᴥ❍ʋ)
+""",
+
     ]
 
     #prints the filename of the image to be uploaded to stdout.
