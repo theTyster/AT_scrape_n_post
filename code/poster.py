@@ -140,10 +140,10 @@ def comic_post(scraped_data, p):
 f"""
 oh my glob. :at_bongocatbmo:
 
-Look. at this rad comic book cover I found. :at_JakeTheDog-heartEyes:
+Look. at this rad comic book cover I found. :at_JakeTheDog_heartEyes:
 """,
 f"""
-Sometimes when I am sad like finn :at_FinnTheBoy-cry: ,
+Sometimes when I am sad like finn :at_FinnTheBoy_cry: ,
 I just look at cool arts.
 
 I hope this makes you smile, atleast.
@@ -161,7 +161,7 @@ That's not what the internet is for I dont think.
 
 But, that is ok because it is comic book time!
 :at_AdventureTime:
-:at_FinnJake-fistbump:
+:at_FinnJake_fistbump:
 """,
 f"""
 I do not post anything that is not either cool and/or awesome.
@@ -185,7 +185,7 @@ I shall never enjoy the pleasures of skinny dipping.
 But, I do enjoy cool looking pictures. Here's one of my favorites.
 """,
 f"""
-Did you know I have a brother named allmo? :at_all-mo:
+Did you know I have a brother named allmo? :at_all_mo:
 He's pretty cool.
 
 Anyway, here's a picture or something.
