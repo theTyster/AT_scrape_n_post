@@ -8,7 +8,7 @@ from pathlib import Path
 # set default parameters for statuses
 def status(*args, **kwargs):
 # set default parameters for a status
-    pler = Mastodon(api_base_url = 'https://thisis.mylegendary.quest', access_token = pleroma_access_token)
+    pler = Mastodon(api_base_url = 'https://behold.mylegendary.quest', access_token = pleroma_access_token)
     pler.feature_set = 'pleroma'
     status_id = pler.status_post(*args, language='en', content_type='text/markdown', **kwargs)
     return status_id.id
@@ -16,18 +16,18 @@ def status(*args, **kwargs):
 
 # set default parameters for media uploads
 def upload(*args, **kwargs):
-    pler = Mastodon(api_base_url = 'https://thisis.mylegendary.quest', access_token = pleroma_access_token)
+    pler = Mastodon(api_base_url = 'https://behold.mylegendary.quest', access_token = pleroma_access_token)
     pler.feature_set = 'pleroma'
     image_id = pler.media_post(*args, mime_type='image/jpeg', **kwargs)
     return image_id.id
 
 def pin(*args):
-    pler = Mastodon(api_base_url = 'https://thisis.mylegendary.quest', access_token = pleroma_access_token)
+    pler = Mastodon(api_base_url = 'https://behold.mylegendary.quest', access_token = pleroma_access_token)
     pler.feature_set = 'pleroma'
     pler.status_pin(*args)
 
 def unpin(*args):
-    pler = Mastodon(api_base_url = 'https://thisis.mylegendary.quest', access_token = pleroma_access_token)
+    pler = Mastodon(api_base_url = 'https://behold.mylegendary.quest', access_token = pleroma_access_token)
     pler.feature_set = 'pleroma'
     pler.status_unpin(*args)
 
