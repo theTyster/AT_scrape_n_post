@@ -2,7 +2,7 @@
 import subprocess, json, os, sys
 from mastodon import Mastodon
 from auth import pleroma_access_token
-grom pathlib import Path
+from pathlib import Path
 from msg import msg_text
 
 pler = Mastodon(api_base_url = 'https://behold.mylegendary.quest', access_token = pleroma_access_token)
