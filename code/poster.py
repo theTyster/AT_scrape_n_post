@@ -2,7 +2,8 @@
 import subprocess, json, os, sys
 from mastodon import Mastodon
 from auth import pleroma_access_token
-from pathlib import Path
+grom pathlib import Path
+from msg import msg_text
 
 
 # set default parameters for statuses
@@ -136,120 +137,10 @@ def comic_post(scraped_data, p):
     issues = list(scraped_data.keys())
     issues.sort() # don't depend on the ordering of dict's to be consistent.
 
-    msg = [
-f"""
-oh my glob. :at_bongocatbmo:
-
-Look. at this rad comic book cover I found. :at_JakeTheDog_heartEyes:
-""",
-f"""
-Sometimes when I am sad like finn :at_FinnTheBoy_cry: ,
-I just look at cool arts.
-
-I hope this makes you smile, atleast.
-""",
-f"""
-I am beemo.
-One day you will be old and also you will be dead.
-
-But it's ok, because I will still be here posting cool pictures for you.
-""",
-f"""
-What time is it??
-It's not adventure time.
-That's not what the internet is for I dont think.
-
-But, that is ok because it is comic book time!
-:at_AdventureTime:
-:at_FinnJake_fistbump:
-""",
-f"""
-I do not post anything that is not either cool and/or awesome.
-""",
-f"""
-Did you know that I can ollie over a sandwhich *while* looking awesome.
-Ok, I only did that one time. And, yes,  there was a ramp. >.>
-
-Stop looking at me like that and look at this instead.
-""",
-f"""
-Hello. word.
-
-:at_bmoWave:
-
-Have some cool comic book cover art!
-""",
-f"""
-I shall never enjoy the pleasures of skinny dipping.
-
-But, I do enjoy cool looking pictures. Here's one of my favorites.
-""",
-f"""
-Did you know I have a brother named allmo? :at_all_mo:
-He's pretty cool.
-
-Anyway, here's a picture or something.
-""",
-"""
-Comics are like. The best.
-""",
-"""
-Hey there Mr. Tuff pants, do you think you have what it takes to go toe to toe with The BMO in a comic book cover recollection tournament?
-
-[Try me, Hot Stuff](https://mylegendary.quest/unlisted/Memory_Game/index.html).
-""",
-"""
-What's colorful and pretty and red all over?
-A comic!
-""",
-"""
-To be honest, I think this one might be my new favorite.
-""",
-"""
-\*kickflip\* 🛹
-""",
-"""
-The votes are in. BMO is the new president.
-As my first order of business, I declare this hour to be mandatory comic book reading hour.
-""",
-f"""
-def readMyComic():
-    msg = "Special Delivery! 📬"
-    comic = {scraped_data[issues[issue_iterator]]['images'][str(image_iterator)]['full image'].split(f'{p}/scraped/img/', maxsplit=1)[1].split('fullsize', maxsplit=1)[1]}
-
-    if adventure_time:
-    fedi.status(msg, comic, visibility="public")
-    else:
-        emotions.current = :byodood:
-
-    pass
-readMyComic()
-""",
-"""
-Well this is awkward. You were looking for something boring to comment on, but all you found was this radical picture. ¯\\\_(ツ)\_/¯
-""",
-"""
-So, now that you have seen my cool picture, what should we do now?
-""",
-"""
-Do you ever think that maybe there is more to life than posting pictures on the internet?
-
-I sure don't!
-""",
-"""
-Boy, some of you guys sure do have a lot of words to say. I just like pretty pictures.
-""",
-"""
-LEEEEEEEEEROOOOYYY
-""",
-"""
-| (• ◡•)|     (❍ᴥ❍ʋ)
-""",
-
-    ]
-
     #prints the filename of the image to be uploaded to stdout.
     print(scraped_data[issues[issue_iterator]]['images'][str(image_iterator)]['full image'].split(f'{p}/scraped/img/', maxsplit=1)[1].split('fullsize', maxsplit=1)[1])
+
+    msg = msg_text
 
     if msg_iterator == len(msg):
         msg_iterator = 0
@@ -267,8 +158,6 @@ LEEEEEEEEEROOOOYYY
             print(f'Dict Key Error for: {e}. Image upload failed.')
             exit()
 
-
-        msg = msg[msg_iterator]
         attribute = f"""
 <hr>
 <br>
@@ -279,10 +168,11 @@ LEEEEEEEEEROOOOYYY
 <br>
 #AdventureTime #Cartoons #Comics #Art
 """
-# TODO: Scrape data about the comic that can be used in making relevant hashtags.
 
+        msg = msg[msg_iterator]
+        msg = msg + attribute
 
-        status((msg + attribute), media_ids=image_id)
+        status((msg), media_ids=image_id)
         return images
 
 
